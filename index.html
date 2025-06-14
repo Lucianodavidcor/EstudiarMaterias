@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación Interactiva: Alfabetización Académica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfbf7;
+            color: #3f3c3a;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active {
+            color: #c7a17a;
+            border-bottom-color: #c7a17a;
+            font-weight: 700;
+        }
+        .sub-nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s, background-color 0.3s;
+            border-radius: 0.5rem;
+        }
+        .sub-nav-link.active {
+            background-color: #c7a17a;
+            color: white;
+        }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .content-section.active {
+            display: block;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #f0e9e1;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .quiz-option {
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .quiz-option.correct { 
+            background-color: #d1fae5; 
+            border-color: #10b981; 
+            color: #064e3b;
+        }
+        .quiz-option.incorrect { 
+            background-color: #fee2e2; 
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        .quiz-feedback {
+            display: none;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+        .quiz-option.correct .quiz-feedback.correct, .quiz-option.incorrect .quiz-feedback.incorrect {
+            display: inline;
+        }
+        .video-placeholder { 
+            cursor: pointer; 
+            position: relative; 
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        .video-placeholder .play-icon {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 60px; height: 60px; background-color: rgba(0,0,0,0.6);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .video-placeholder:hover .play-icon { 
+            background-color: rgba(199, 161, 122, 0.9);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        .play-icon svg { fill: white; width: 30px; height: 30px; }
+        .quote {
+            border-left: 3px solid #c7a17a;
+            padding-left: 1rem;
+            font-style: italic;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-3">
+            <ul class="flex flex-wrap justify-center gap-x-4 gap-y-2 md:gap-x-6 text-sm md:text-base font-medium text-gray-600">
+                <li><a href="#" class="nav-link" data-target="contenido">Contenido</a></li>
+                <li><a href="#" class="nav-link" data-target="quiz">Autoevaluación</a></li>
+                <li><a href="#" class="nav-link" data-target="videos">Videoteca</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="contenido" class="content-section">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-[#3f3c3a] mb-2">Conceptos Clave de Alfabetización Académica</h1>
+                <p class="text-lg text-gray-500 max-w-3xl mx-auto">Explora los temas fundamentales del resumen de estudio, presentados con más detalle, ejemplos y diagramas para facilitar tu aprendizaje.</p>
+            </div>
+             <div class="flex flex-wrap justify-center mb-10 border-b border-gray-200">
+                 <button class="sub-nav-link px-3 py-2 text-sm md:px-4 md:py-2 md:text-base font-semibold" data-subtarget="com-sub">Comunicación</button>
+                 <button class="sub-nav-link px-3 py-2 text-sm md:px-4 md:py-2 md:text-base" data-subtarget="fun-sub">Funciones</button>
+                 <button class="sub-nav-link px-3 py-2 text-sm md:px-4 md:py-2 md:text-base" data-subtarget="prop-sub">Propiedades del Texto</button>
+                 <button class="sub-nav-link px-3 py-2 text-sm md:px-4 md:py-2 md:text-base" data-subtarget="comp-sub">Comprensión Lectora</button>
+                 <button class="sub-nav-link px-3 py-2 text-sm md:px-4 md:py-2 md:text-base" data-subtarget="inst-sub">Textos Instrumentales</button>
+            </div>
+
+            <div id="sub-content-container">
+                <div id="com-sub" class="sub-content">
+                    <div class="space-y-10">
+                        <div class="card rounded-lg p-6">
+                            <h2 class="text-2xl font-bold mb-4 text-[#c7a17a]">El Proceso de Comunicación</h2>
+                            <p class="mb-6">Es un proceso de interacción social donde se intercambian mensajes (ideas, sentimientos, información) entre un emisor y un receptor, a través de un código y un canal, dentro de un contexto específico.</p>
+                             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <h3 class="font-bold text-center mb-4">Diagrama del Circuito Comunicativo</h3>
+                                <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0">
+                                    <div class="text-center">
+                                        <div class="p-3 bg-[#e0c9b1] rounded-full inline-block">👤</div>
+                                        <p class="font-semibold">Emisor</p>
+                                        <p class="text-xs text-gray-500">Codifica el mensaje</p>
+                                    </div>
+                                    <div class="text-center font-mono text-gray-600 text-sm">➡️<br>Mensaje (Canal)<br>⬅️<br>Feedback</div>
+                                    <div class="text-center">
+                                        <div class="p-3 bg-[#e0c9b1] rounded-full inline-block">👥</div>
+                                        <p class="font-semibold">Receptor</p>
+                                        <p class="text-xs text-gray-500">Decodifica el mensaje</p>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-4 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
+                                    <p>Todo el proceso ocurre en un <strong>Contexto</strong> y está sujeto a <strong>Barreras</strong> (físicas, semánticas, personales).</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card rounded-lg p-6">
+                            <h2 class="text-2xl font-bold mb-3 text-[#c7a17a]">Tipos, Registros y Estilos</h2>
+                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-bold mb-2">Registros del Lenguaje</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm">
+                                        <li><strong>Formal:</strong> Cuidadoso y preciso. Ej: una carta de solicitud.</li>
+                                        <li><strong>Informal:</strong> Espontáneo y relajado. Ej: una charla con amigos.</li>
+                                        <li><strong>Estándar:</strong> Neutro y comprensible para todos. Ej: un noticiero.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-bold mb-2">Tipos de Comunicación</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm">
+                                        <li><strong>Directa:</strong> Cara a cara.</li>
+                                        <li><strong>Interna:</strong> Dentro de una organización (Horizontal, Vertical, Transversal).</li>
+                                        <li><strong>Interpersonal:</strong> Entre dos o más personas.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <h4 class="font-bold mb-2">Estilos de Comunicación</h4>
+                                    <ul class="list-disc list-inside space-y-1 text-sm">
+                                        <li><strong>Asertivo:</strong> "Entiendo tu punto, pero opino diferente".</li>
+                                        <li><strong>Pasivo:</strong> Evita expresar su opinión por miedo.</li>
+                                        <li><strong>Agresivo:</strong> Impone sus ideas sin escuchar.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="card rounded-lg p-6">
+                            <h2 class="text-2xl font-bold mb-3 text-[#c7a17a]">Técnicas para Mejorar la Comunicación</h2>
+                             <p class="mb-4">Para lograr una comunicación efectiva, es útil aplicar diversas técnicas que mejoran tanto la transmisión de mensajes como la capacidad de escucha.</p>
+                             <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Seguimiento:</strong> Verificar si el mensaje fue comprendido.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Regulación:</strong> No sobrecargar con información.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Feedback:</strong> Usar la respuesta del receptor para ajustar.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Empatía:</strong> Ponerse en el lugar del otro.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Repetición:</strong> Reiterar ideas clave para asegurar la comprensión.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Confianza Mutua:</strong> Un clima de confianza facilita la comunicación.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Oportunidad:</strong> Elegir el momento adecuado.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Simplificación:</strong> Usar un lenguaje claro y sencillo.</li>
+                                 <li class="bg-gray-50 p-3 rounded-lg"><strong>Escucha Eficaz:</strong> Prestar atención activa y sin interrumpir.</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="fun-sub" class="sub-content hidden">
+                    <div class="text-center mb-8">
+                         <h2 class="text-3xl font-bold text-[#3f3c3a]">Funciones del Lenguaje</h2>
+                         <p class="text-gray-600 max-w-2xl mx-auto">Cada acto de habla tiene una intención. Estas funciones clasifican el propósito principal detrás de cada mensaje, centrándose en un elemento del circuito comunicativo.</p>
+                    </div>
+                     <div class="relative w-full max-w-xl mx-auto h-96">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-32 h-32 bg-[#c7a17a] text-white rounded-full flex items-center justify-center font-bold text-lg text-center">Funciones del<br>Lenguaje</div>
+                        </div>
+                        <div class="func-item absolute" style="top: 0; left: 50%; transform: translateX(-50%);">
+                            <div class="text-center cursor-pointer p-2 bg-white rounded-lg shadow" data-content="emotiva"><p class="font-bold">Emotiva</p><p class="text-xs">(Emisor)</p></div>
+                        </div>
+                         <div class="func-item absolute" style="top: 50%; left: 0; transform: translateY(-50%);">
+                            <div class="text-center cursor-pointer p-2 bg-white rounded-lg shadow" data-content="poetica"><p class="font-bold">Poética</p><p class="text-xs">(Mensaje)</p></div>
+                        </div>
+                        <div class="func-item absolute" style="top: 50%; right: 0; transform: translateY(-50%);">
+                            <div class="text-center cursor-pointer p-2 bg-white rounded-lg shadow" data-content="apelativa"><p class="font-bold">Apelativa</p><p class="text-xs">(Receptor)</p></div>
+                        </div>
+                         <div class="func-item absolute" style="bottom: 0; left: 50%; transform: translateX(-50%);">
+                            <div class="text-center cursor-pointer p-2 bg-white rounded-lg shadow" data-content="fatica"><p class="font-bold">Fática</p><p class="text-xs">(Canal)</p></div>
+                        </div>
+                         <div class="func-item absolute" style="top: 20%; left: 10%; transform: translate(-50%, -50%);">
+                             <div class="text-center cursor-pointer p-2 bg-white rounded-lg shadow" data-content="referencial"><p class="font-bold">Referencial</p><p class="text-xs">(Referente)</p></div>
+                        </div>
+                        <div class="func-item absolute" style="top: 75%; right: 5%; transform: translate(-50%, -50%);">
+                           <div class="text-center cursor-pointer p-2 bg-white rounded-lg shadow" data-content="metalinguistica"><p class="font-bold">Metalingüística</p><p class="text-xs">(Código)</p></div>
+                        </div>
+                    </div>
+                     <div id="funciones-content-detail" class="mt-8 card p-6 max-w-2xl mx-auto min-h-[100px]"></div>
+                </div>
+                <div id="prop-sub" class="sub-content hidden">
+                    <div class="text-center mb-8">
+                         <h2 class="text-3xl font-bold text-[#3f3c3a]">Propiedades del Texto (Según M. J. Cuenca)</h2>
+                         <p class="text-gray-600 max-w-2xl mx-auto">Para que un texto sea eficaz, debe cumplir con tres propiedades fundamentales que garantizan su sentido y correcta interpretación.</p>
+                    </div>
+                     <div class="space-y-6">
+                         <div class="card rounded-lg p-6">
+                            <h3 class="text-xl font-bold mb-2 text-[#c7a17a]">1. Adecuación</h3>
+                            <p class="text-gray-600">Es la capacidad de adaptar el texto al contexto comunicativo. Un texto adecuado considera la intención, el receptor, el canal y el tema, eligiendo el registro y vocabulario correctos. <em class="text-gray-500 block mt-2"><strong>Ejemplo:</strong> No se usa el mismo lenguaje en un informe técnico que en un mensaje de WhatsApp a un amigo.</em></p>
+                        </div>
+                         <div class="card rounded-lg p-6">
+                            <h3 class="text-xl font-bold mb-2 text-[#c7a17a]">2. Coherencia</h3>
+                            <p class="text-gray-600">Se refiere a la organización lógica y la unidad de sentido del texto. Un texto es coherente si tiene un tema central claro, la información es pertinente y está estructurada de forma que avanza sin contradicciones. <em class="text-gray-500 block mt-2"><strong>Ejemplo:</strong> Un texto sobre la fotosíntesis no debería incluir de repente una receta de cocina, pues rompería la unidad temática.</em></p>
+                        </div>
+                        <div class="card rounded-lg p-6">
+                            <h3 class="text-xl font-bold mb-2 text-[#c7a17a]">3. Cohesión</h3>
+                            <p class="text-gray-600">Son los mecanismos lingüísticos que conectan las diferentes partes del texto para crear una unidad fluida.</p>
+                             <div class="mt-4 bg-gray-50 p-4 rounded-lg">
+                                <p class="font-semibold">Mecanismos de Cohesión:</p>
+                                <ul class="list-disc list-inside text-sm mt-2">
+                                    <li><strong>Referencia:</strong> Uso de pronombres, sinónimos o elipsis.</li>
+                                    <li><strong>Conexión:</strong> Uso de conectores que explicitan la relación entre ideas ("pero", "además", "por lo tanto").</li>
+                                </ul>
+                                <p class="mt-2 text-sm quote"><strong>Ejemplo:</strong> En "Elena pidió un café. <strong>Le</strong> sirvieron rapidísimo", el pronombre <strong>"Le"</strong> se refiere a "Elena", evitando la repetición y cohesionando el texto.</p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="comp-sub" class="sub-content hidden">
+                    <div class="text-center mb-8">
+                         <h2 class="text-3xl font-bold text-[#3f3c3a]">Fases de la Comprensión Lectora (Según Estela Zalba)</h2>
+                         <p class="text-gray-600 max-w-2xl mx-auto">Leer no es solo decodificar palabras, sino un proceso activo de construcción de significado que se desarrolla en etapas.</p>
+                    </div>
+                     <div class="space-y-6">
+                        <div class="card p-6">
+                            <h3 class="font-bold text-lg mb-2">1. Lectura Exploratoria (Pre-lectura)</h3>
+                            <p>Es el primer vistazo al texto. Se analizan elementos paratextuales (título, autor, imágenes) para formular una <strong>hipótesis</strong> sobre el tema y activar conocimientos previos. Es preguntarse: ¿De qué tratará este texto?</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="font-bold text-lg mb-2">2. Lectura Analítica</h3>
+                            <p>Es la lectura profunda para construir el sentido. En esta fase se valida o corrige la hipótesis, se identifican las ideas principales y secundarias, se <strong>jerarquiza la información</strong> y se analiza cómo se conectan las ideas para entender el <strong>tópico</strong> (el tratamiento particular que el texto hace del tema).</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="font-bold text-lg mb-2">3. Representación de la Información (Post-lectura)</h3>
+                            <p>Es la fase de síntesis, donde el lector reelabora y organiza lo comprendido para apropiarse del conocimiento. Esto se puede hacer a través de <strong>resúmenes, síntesis, esquemas o mapas conceptuales</strong>.</p>
+                        </div>
+                     </div>
+                </div>
+                <div id="inst-sub" class="sub-content hidden">
+                    <div class="text-center mb-8">
+                         <h2 class="text-3xl font-bold text-[#3f3c3a]">Textos Instrumentales</h2>
+                         <p class="text-gray-600 max-w-2xl mx-auto">Son textos de uso práctico y funcional, con formatos y lenguaje precisos, diseñados para regular o registrar acciones en ámbitos laborales o administrativos.</p>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="card rounded-lg p-6">
+                            <h3 class="text-2xl font-bold mb-3 text-[#c7a17a]">La Solicitud</h3>
+                            <p class="text-gray-600">Escrito formal para pedir algo. Debe ser claro y respetuoso. Su estructura general es:</p>
+                            <ul class="list-decimal list-inside mt-2 space-y-1 text-sm">
+                                <li>Encabezado (destinatario, fecha).</li>
+                                <li>Cuerpo (exposición del pedido y justificación).</li>
+                                <li>Cierre (saludo formal y firma).</li>
+                            </ul>
+                        </div>
+                        <div class="card rounded-lg p-6">
+                            <h3 class="text-2xl font-bold mb-3 text-[#c7a17a]">El Acta</h3>
+                            <p class="text-gray-600">Documento que registra lo sucedido y acordado en una reunión. Tiene valor legal y su estructura incluye:</p>
+                             <ul class="list-decimal list-inside mt-2 space-y-1 text-sm">
+                                <li>Lugar, fecha y lista de asistentes.</li>
+                                <li>Orden del día (temas a tratar).</li>
+                                <li>Desarrollo y acuerdos tomados.</li>
+                                <li>Cierre y firmas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-[#3f3c3a] mb-2">Autoevaluación</h1>
+                <p class="text-lg text-gray-500 max-w-3xl mx-auto">Pon a prueba tus conocimientos. Elige la respuesta correcta para cada pregunta y obtén retroalimentación al instante.</p>
+            </div>
+            <div id="quiz-container" class="max-w-3xl mx-auto space-y-8"></div>
+            <div class="max-w-3xl mx-auto mt-8 text-center">
+                <div id="quiz-results" class="mt-4 text-xl font-bold"></div>
+            </div>
+        </section>
+        
+        <section id="videos" class="content-section">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-[#3f3c3a] mb-2">Videoteca de Apoyo</h1>
+                <p class="text-lg text-gray-500 max-w-3xl mx-auto">Refuerza tu aprendizaje con esta selección de videos educativos que explican de manera visual y dinámica los temas clave de la alfabetización académica.</p>
+            </div>
+            <div id="video-gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+        </section>
+        
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainNavLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const subNavLinks = document.querySelectorAll('.sub-nav-link');
+            const subContentContainers = document.querySelectorAll('.sub-content');
+            
+            function showSection(targetId) {
+                contentSections.forEach(section => section.classList.remove('active'));
+                const targetSection = document.getElementById(targetId);
+                if(targetSection) targetSection.classList.add('active');
+                
+                mainNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.target === targetId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+             function showSubSection(targetId) {
+                subContentContainers.forEach(container => container.classList.add('hidden'));
+                const targetSubSection = document.getElementById(targetId);
+                if (targetSubSection) targetSubSection.classList.remove('hidden');
+                
+                subNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.subtarget === targetId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            mainNavLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    showSection(event.target.dataset.target);
+                });
+            });
+            
+            subNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    showSubSection(e.target.dataset.subtarget);
+                });
+            });
+
+            const funcItems = document.querySelectorAll('.func-item .cursor-pointer');
+            const funcContentDetail = document.getElementById('funciones-content-detail');
+            
+            const funcionesData = {
+                referencial: { title: 'Función Referencial', text: 'Su objetivo es transmitir información objetiva sobre la realidad (el referente). Es la función principal en textos expositivos. Ejemplo: “La temperatura es de 15°C.”' },
+                emotiva: { title: 'Función Emotiva', text: 'Expresa los sentimientos, emociones y opiniones del emisor. Ejemplo: “¡Qué alegría verte!”' },
+                apelativa: { title: 'Función Apelativa', text: 'Busca influir en la conducta del receptor o convencerlo de algo. Ejemplo: “¡Compre ahora!”' },
+                poetica: { title: 'Función Poética', text: 'Se centra en la belleza del mensaje, usando recursos literarios. Ejemplo: “Tus ojos son dos luceros.”' },
+                fatica: { title: 'Función Fática', text: 'Verifica que el canal de comunicación funciona. Ejemplo: “¿Me escuchas?”' },
+                metalinguistica: { title: 'Función Metalingüística', text: 'Se usa para hablar del propio lenguaje. Ejemplo: “La palabra ‘casa’ es un sustantivo.”' }
+            };
+
+            if (funcItems.length > 0) {
+                funcItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const contentKey = item.dataset.content;
+                        const data = funcionesData[contentKey];
+                        if (funcContentDetail) {
+                            funcContentDetail.innerHTML = `<h3 class="text-xl font-bold mb-2 text-[#c7a17a]">${data.title}</h3><p class="text-gray-700">${data.text}</p>`;
+                        }
+                    });
+                });
+                funcItems[0].click(); 
+            }
+
+            const quizContainer = document.getElementById('quiz-container');
+            if (quizContainer) {
+                const quizQuestions = [
+                    { question: "¿Qué propiedad del texto se refiere a su adaptación al contexto comunicativo?", options: ["Cohesión", "Adecuación", "Coherencia"], answer: "Adecuación" },
+                    { question: "La función del lenguaje que busca convencer al receptor es la:", options: ["Referencial", "Emotiva", "Apelativa"], answer: "Apelativa" },
+                    { question: "'Elipsis' (omitir un elemento que se sobreentiende) es un mecanismo de:", options: ["Coherencia", "Adecuación", "Cohesión"], answer: "Cohesión" },
+                    { question: "Un texto que explica objetivamente un tema, como un artículo de enciclopedia, se clasifica como:", options: ["Argumentativo", "Narrativo", "Expositivo"], answer: "Expositivo" },
+                    { question: "La primera fase de la comprensión lectora, según el modelo de Zalba, donde se formula una hipótesis inicial, es la:", options: ["Lectura Analítica", "Lectura Exploratoria", "Representación de la Información"], answer: "Lectura Exploratoria" },
+                    { question: "Un Acta de reunión es un claro ejemplo de texto:", options: ["Literario", "Argumentativo", "Instrumental"], answer: "Instrumental" }
+                ];
+                const quizResults = document.getElementById('quiz-results');
+
+                function renderQuiz() {
+                    quizContainer.innerHTML = '';
+                    quizQuestions.forEach((q, index) => {
+                        const questionEl = document.createElement('div');
+                        questionEl.className = 'card p-6 rounded-lg';
+                        questionEl.innerHTML = `<p class="font-semibold mb-4 text-lg">${index + 1}. ${q.question}</p>`;
+                        const optionsEl = document.createElement('div');
+                        optionsEl.className = 'space-y-3';
+                        q.options.forEach(option => {
+                            const optionId = `q${index}_${option.replace(/\s+/g, '')}`;
+                            optionsEl.innerHTML += `
+                                <label for="${optionId}" class="quiz-option block p-3 border-2 border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer has-[:checked]:bg-[#e0c9b1] has-[:checked]:border-[#c7a17a]">
+                                    <input type="radio" id="${optionId}" name="question${index}" value="${option}" class="hidden">
+                                    ${option}
+                                    <span class="quiz-feedback correct text-green-600">✔</span>
+                                    <span class="quiz-feedback incorrect text-red-600">✖</span>
+                                </label>`;
+                        });
+                        questionEl.appendChild(optionsEl);
+                        quizContainer.appendChild(questionEl);
+                    });
+
+                    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        radio.addEventListener('change', () => {
+                            const qIndex = parseInt(radio.name.replace('question', ''), 10);
+                            const correctAnswer = quizQuestions[qIndex].answer;
+                            const selectedValue = radio.value;
+                            const parentLabel = radio.parentElement;
+                            document.querySelectorAll(`input[name="${radio.name}"]`).forEach(inp => inp.parentElement.classList.remove('correct', 'incorrect'));
+                            if (selectedValue === correctAnswer) parentLabel.classList.add('correct');
+                            else parentLabel.classList.add('incorrect');
+                            updateQuizScore();
+                        });
+                    });
+                }
+                
+                function updateQuizScore() {
+                    let score = 0;
+                    quizQuestions.forEach((q, index) => {
+                        const selectedCorrectly = quizContainer.querySelector(`input[name="question${index}"]:checked`);
+                        if (selectedCorrectly && selectedCorrectly.parentElement.classList.contains('correct')) score++;
+                    });
+                    quizResults.textContent = `Puntuación: ${score} de ${quizQuestions.length}`;
+                }
+                renderQuiz();
+            }
+
+            const videoGallery = document.getElementById('video-gallery');
+            if (videoGallery) {
+                const videos = [
+                    { id: 'UJxSAq54HkA', title: 'Las Funciones del Lenguaje', desc: 'Una explicación clara y concisa de las 6 funciones del lenguaje, con ejemplos.' },
+                    { id: '1b4zfLc5M54', title: 'Coherencia y Cohesión', desc: 'Aprende a identificar y aplicar las propiedades de coherencia y cohesión para mejorar tus textos.' },
+                    { id: 'tMP1lds7pLM', title: 'Tipos de Textos: Guía Fácil', desc: 'Un repaso visual por las características de los textos narrativos, expositivos, argumentativos, etc.' },
+                    { id: 'ZgmSfdE2y-s', title: 'La Comunicación Asertiva', desc: 'Claves y ejemplos prácticos para desarrollar un estilo de comunicación asertivo y eficaz.' }
+                ];
+                function renderVideos() {
+                    videoGallery.innerHTML = '';
+                    videos.forEach(video => {
+                        const videoEl = document.createElement('div');
+                        videoEl.className = 'card rounded-lg overflow-hidden shadow-lg';
+                        videoEl.innerHTML = `
+                            <div class="video-placeholder aspect-w-16 aspect-h-9 bg-gray-900" data-video-id="${video.id}">
+                                <img src="https://i.ytimg.com/vi/${video.id}/hqdefault.jpg" alt="Miniatura del video ${video.title}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/480x360/333/FFF?text=Video';">
+                                <div class="play-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-white">
+                                <h4 class="font-bold text-lg mb-1">${video.title}</h4>
+                                <p class="text-sm text-gray-600">${video.desc}</p>
+                            </div>
+                        `;
+                        videoGallery.appendChild(videoEl);
+                    });
+                }
+                videoGallery.addEventListener('click', e => {
+                    const placeholder = e.target.closest('.video-placeholder');
+                    if (placeholder) {
+                        const videoId = placeholder.dataset.videoId;
+                        placeholder.innerHTML = `<iframe class="w-full aspect-video" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    }
+                });
+                renderVideos();
+            }
+
+            // Initial calls
+            showSection('contenido');
+            showSubSection('com-sub');
+        });
+    </script>
+</body>
+</html>
